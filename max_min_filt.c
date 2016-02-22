@@ -1,37 +1,19 @@
 #include "mex.h"
 
-
 void mexFunction(int nlhs, mxArray *plhs[],
                  int nrhs, const mxArray *prhs[]) 
 {
-    double *data;
+    double *data = (double*)mxGetData(prhs[0]);;
     int length_filter = (int)mxGetScalar(prhs[1]);
+    int filter_type = (int)mxGetScalar(prhs[2]);
     int input_length = (int)mxGetNumberOfElements(prhs[0]);
-    double *memory;
-    double min;
-    double *output;
+    double memory[input_length];
+    double max = (double)data[0];
     int n;
     int idx;
-    memory = (double*) malloc(sizeof(*memory) * length_filter);
     plhs[0] = mxCreateDoubleMatrix(1, input_length, mxREAL);
-    output  = (double*)mxGetData(plhs[0]);
-    data = (double*)mxGetData(prhs[0]);
-    min = data[0];
-    if (nlhs != 1 || nrhs != 2) 
-    {
-        mexErrMsgTxt("must be called with two input and one output arguments \n");
-        return;
-    }
-    if (!mxIsScalar(prhs[1])) 
-    {
-        mexErrMsgTxt("second argument must be a scalar \n");
-        return;
-    }
-    if (mxGetNumberOfElements(prhs[0]) < mxGetScalar(prhs[1])) 
-    {
-        mexErrMsgTxt("the length of the vector is smaller than the filter length");
-        return;
-    }    
+    double *output = (double*)mxGetData(plhs[0]);
+    
     for (n=0; n<length_filter; n++)
     {
         memory[n] = data[0];
@@ -53,15 +35,24 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 }     
             } 
         }
-        min = memory[0];
+        max = memory[0];
         for (idx=0; idx<length_filter-1; idx++)
         {
-            if(memory[idx+1] < min)
+            if(filter_type == 1) // max filter
             {
-                min = memory[idx+1];
+                if(memory[idx+1] > max)
+                {
+                    max = memory[idx+1];
+                }
+            }
+            else if(filter_type == 2) // min filter
+            {
+                if(memory[idx+1] < max)
+                {
+                    max = memory[idx+1];
+                }
             }
         }
-        output[n] = min;
+        output[n] = max;
     }
-    free(memory);
 }
