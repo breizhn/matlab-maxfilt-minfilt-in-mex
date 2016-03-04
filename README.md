@@ -1,1 +1,1 @@
-# maxfilt-minfilt-matlab-mex-
+# Matlab: maxfilt/minfilt in mex
