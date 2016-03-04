@@ -22,34 +22,28 @@ void mexFunction(int nlhs, mxArray *plhs[],
     {
         for (idx=0; idx<length_filter; idx++)
         {
-            if ((n + idx) > input_length)
-            {
-                memory[idx] = data[input_length - 1];
+            if(idx == (length_filter-1)){
+                memory[idx] = data[n];  
             } 
             else{
-                if(idx == (length_filter-1)){
-                    memory[idx] = data[n];  
-                } 
-                else{
-                    memory[idx] = memory[idx+1];
-                }     
-            } 
-        }
+                memory[idx] = memory[idx+1];
+            }     
+        } 
         max = memory[0];
-        for (idx=0; idx<length_filter-1; idx++)
+        for (idx=1; idx<length_filter; idx++)
         {
             if(filter_type == 1) // max filter
             {
-                if(memory[idx+1] > max)
+                if(memory[idx] > max)
                 {
-                    max = memory[idx+1];
+                    max = memory[idx];
                 }
             }
             else if(filter_type == 2) // min filter
             {
-                if(memory[idx+1] < max)
+                if(memory[idx] < max)
                 {
-                    max = memory[idx+1];
+                    max = memory[idx];
                 }
             }
         }

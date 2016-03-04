@@ -23,10 +23,6 @@ end
 if nargin < 2
     error('not enough input arguments')
 end
-% checking filter length
-if length(x) < filter_length
-    error('filter_length has to be greater than the input length')
-end
 % checking if x is a vector
 if ~any(size(x) == 1)
     error('x must be a vector')
